@@ -35,7 +35,8 @@ while LOOP:
     print(INPUT_WORDS)
 
     DOC_LIST = BoolSearchDel.bool_search(INPUT_WORDS, INDEX)
-    print(len(DOC_LIST), "DOCs :")
-    print(DOC_LIST)
+    print("Found {0} document(s)  that matched query".format(len(DOC_LIST)))
+    for i in range(len(DOC_LIST)):
+        print("doc name:{0}.html".format(DOC_LIST[i]))
 
 print("ByeBye!")

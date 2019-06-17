@@ -48,7 +48,7 @@ def infix_to_postfix(input_list):
     return postfix
 
 
-def bool_search(query, index):
+def bool_search(query, index, syn_FLAG):
     postfix = infix_to_postfix(query)
     result = []
     limit = len(postfix)
@@ -59,11 +59,11 @@ def bool_search(query, index):
             if i < limit - 1:
                 if postfix[i + 1] == "NOT":
                     i = i + 1
-                    result.append(search.search_bool_phrase(index, item, flag=False))
+                    result.append(search.search_bool_phrase(index, item, syn_FLAG, flag=False))
                 else:
-                    result.append(search.search_bool_phrase(index, item, flag=True))
+                    result.append(search.search_bool_phrase(index, item, syn_FLAG, flag=True))
             else:
-                result.append(search.search_bool_phrase(index, item, flag=True))
+                result.append(search.search_bool_phrase(index, item, syn_FLAG, flag=True))
         elif item == 'AND':
             if len(result) < 2:
                 print("illegal query")

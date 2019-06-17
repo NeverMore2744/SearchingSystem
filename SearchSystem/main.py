@@ -25,6 +25,11 @@ LOOP = True
 print("=================Searching System=================")
 
 while LOOP:
+    syn_FLAG = False
+    print("Enable Synonym Retrieval?[Y]/[N]")
+    choose = input()
+    if choose == "Y":
+        syn_FLAG = True 
     print("input the query statement(EXIT to quit):")
     STATEMENT = input()
     if STATEMENT == "EXIT":
@@ -34,7 +39,7 @@ while LOOP:
     INPUT_WORDS = stemming.lemmatize_sentence(STATEMENT, True)
     print(INPUT_WORDS)
 
-    DOC_LIST = BoolSearchDel.bool_search(INPUT_WORDS, INDEX)
+    DOC_LIST = BoolSearchDel.bool_search(INPUT_WORDS, INDEX, syn_FLAG)
     print("Found {0} document(s)  that matched query".format(len(DOC_LIST)))
     for i in range(len(DOC_LIST)):
         print("doc name:{0}.html".format(DOC_LIST[i]))

@@ -1,27 +1,35 @@
 import queue
 import os
 import tools
+from nltk.corpus import wordnet as wn
 from Serching import operateDocList
 
 
-def search_single_word(index, word):
-    if word not in index:
-        return []
+def search_single_word(index, word, syn_FLAG):
+    if syn_FLAG:
+        synonym = wn.synsets(word)[0].lemma_names()
     else:
-        # 将所有文档id变为数字
-        docList = [int(key) for key in index[word]['doc_list'].keys()]
-        # 将文档的id排序
-        docList.sort()
-        return docList
+        synonym = [word]
+    res = []
+    for word in synonym:
+        if word not in index:
+            continue
+        else:
+            # 将所有文档id变为数字
+            docList = [int(key) for key in index[word]['doc_list'].keys()]
+            # 将文档的id排序
+            docList.sort()
+            res = operateDocList.merge_list(docList, res)
+    return res
 
 
 # 短语查询支持
-def search_bool_phrase(index, word_list, flag):
+def search_bool_phrase(index, word_list, syn_FLAG, flag):
     if len(word_list) == 0:
         return []
     doc_queue = queue.Queue()
     for word in word_list:
-        doc_queue.put(search_single_word(index, word))
+        doc_queue.put(search_single_word(index, word, syn_FLAG))
 
     while doc_queue.qsize() > 1:
         list1 = doc_queue.get()

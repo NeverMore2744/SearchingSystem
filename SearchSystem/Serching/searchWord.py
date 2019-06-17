@@ -7,7 +7,7 @@ from Serching import operateDocList
 
 def search_single_word(index, word, syn_FLAG):
     if syn_FLAG:
-        synonym = wn.synsets(word)[0].lemma_names()
+        synonym = wn.synsets(word)[0].lemma_names() if len(word) > 0 else []
     else:
         synonym = [word]
     res = []

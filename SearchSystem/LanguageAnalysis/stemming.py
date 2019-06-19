@@ -25,6 +25,7 @@ def lemmatize_sentence(sentence, forinput):
     res = []
     result = []
     lemmatizer = WordNetLemmatizer()
+    word_tokenized = word_tokenize(sentence)
     for word, pos in pos_tag(word_tokenize(sentence)):
         wordnet_pos = get_wordnet_pos(pos) or wordnet.NOUN
         res.append(lemmatizer.lemmatize(word, pos=wordnet_pos))

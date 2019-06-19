@@ -39,7 +39,6 @@ class InvertedIndex:
         self.__doc_count = _temp_data["doc_count"]
         _progress_bar = tqdm.tqdm(total=len(_temp_inverted_index))
         self.__inverted_index = dict()
-        self.__doc_count = 0
         for _temp_index_item in _temp_inverted_index:
             _word_item = _temp_index_item[0]
             self.__inverted_index[_word_item] = dict()

@@ -1,5 +1,6 @@
 import nltk
 import collections
+import math
 from Serching import operateDocList as listSort
 from Serching import searchWord as search
 
@@ -48,10 +49,32 @@ def infix_to_postfix(input_list):
     return postfix
 
 
-def bool_search(query, index, syn_FLAG):
+def calculate_wf_idf(doc_num, index, items, doc_list):
+    scores=dict()
+    for doc in doc_list:
+        scores[doc] = 0
+
+    for item in items:
+        if item not in index:
+            continue
+
+        idf = math.log(doc_num/index[item]['df'], 10)
+        for key in doc_list:
+            if key not in index[item]['doc_list']:
+                continue
+            wf = 1 + math.log(index[item]['doc_list'][key]['tf'], 10)
+            scores[key] += wf*idf
+
+    return sorted(scores.items(), key = lambda kv: (kv[1], kv[0]), reverse=True)
+# return doc_list 
+
+
+def bool_search(doc_num, query, index, syn_FLAG):
     postfix = infix_to_postfix(query)
     result = []
     limit = len(postfix)
+# Used items
+    items = []
     i = 0
     while i < limit:
         item = postfix[i]
@@ -59,11 +82,13 @@ def bool_search(query, index, syn_FLAG):
             if i < limit - 1:
                 if postfix[i + 1] == "NOT":
                     i = i + 1
-                    result.append(search.search_bool_phrase(index, item, syn_FLAG, flag=False))
+                    result.append(search.search_bool_phrase(doc_num, index, item, syn_FLAG, flag=False))
                 else:
-                    result.append(search.search_bool_phrase(index, item, syn_FLAG, flag=True))
+                    items += item
+                    result.append(search.search_bool_phrase(doc_num, index, item, syn_FLAG, flag=True))
             else:
-                result.append(search.search_bool_phrase(index, item, syn_FLAG, flag=True))
+                items += item
+                result.append(search.search_bool_phrase(doc_num, index, item, syn_FLAG, flag=True))
         elif item == 'AND':
             if len(result) < 2:
                 print("illegal query")
@@ -85,4 +110,4 @@ def bool_search(query, index, syn_FLAG):
         print("illegal query")
         return []
     else:
-        return result.pop()
+        return calculate_wf_idf(doc_num, index, items, result.pop())

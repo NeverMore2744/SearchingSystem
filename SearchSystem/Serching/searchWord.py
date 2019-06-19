@@ -1,11 +1,14 @@
 import queue
 import os
 import tools
-from nltk.corpus import wordnet as wn
+# For calculating wf-idf
+import math 
+# For synonym, wordnet.synsets
+from nltk.corpus import wordnet as wn 
 from Serching import operateDocList
 
 
-def search_single_word(index, word, syn_FLAG):
+def search_single_word(doc_num, index, word, syn_FLAG):
     if syn_FLAG:
         synonym = wn.synsets(word)
         synonym = synonym[0].lemma_names() if len(synonym) > 0 else []
@@ -20,17 +23,18 @@ def search_single_word(index, word, syn_FLAG):
             docList = [int(key) for key in index[word]['doc_list'].keys()]
             # 将文档的id排序
             docList.sort()
+            
             res = operateDocList.merge_list(docList, res)
     return res
 
 
 # 短语查询支持
-def search_bool_phrase(index, word_list, syn_FLAG, flag):
+def search_bool_phrase(doc_num, index, word_list, syn_FLAG, flag):
     if len(word_list) == 0:
         return []
     doc_queue = queue.Queue()
     for word in word_list:
-        doc_queue.put(search_single_word(index, word, syn_FLAG))
+        doc_queue.put(search_single_word(doc_num, index, word, syn_FLAG))
 
     while doc_queue.qsize() > 1:
         list1 = doc_queue.get()
